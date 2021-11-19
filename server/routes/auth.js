@@ -8,10 +8,10 @@ const auth = require ('../middleware/auth')
 //Iniciar sesion
 // /api/auth
 router.post('/', 
-[
-    check('email', 'Agregar email valido').isEmail(),
-    check('password', 'El password debe ser mínimo de 6 caracteres').isLength({min:6})
-],
+// [
+//     check('email', 'Agregar email valido').isEmail(),
+//     check('password', 'El password debe ser mínimo de 6 caracteres').isLength({min:6})
+// ],
 authController.autenticarUsuario
 );
 //obtener el usuario autenticado

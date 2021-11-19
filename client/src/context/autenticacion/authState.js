@@ -3,6 +3,7 @@ import AuthContext from './authContext'
 import AuthReducer from './authReducer'
 
 import clienteAxios from '../../config/axios'
+import tokenAuth from '../../config/token'
 
 
 import {REGISTRO_EXITOSO, 
@@ -33,7 +34,7 @@ import {REGISTRO_EXITOSO,
                 })
 
                 //obteer el usuario
-                usuarioAutenticado
+                usuarioAutenticado()
             } catch (error) {
                 // console.log(error);
                 const alerta = {
@@ -51,14 +52,35 @@ import {REGISTRO_EXITOSO,
         const usuarioAutenticado = async () =>{
             const token = localStorage.getItem('token')
             if (token){
-
+                tokenAuth(token)
             }
             try {
                 const respuesta = await clienteAxios.get ('/api/auth')
+                dispatch ({
+                    type: OBTENER_USUARIO,
+                    payload: respuesta.data.usuario
+                })
             } catch (error) {
                     dispatch({
                         type: LOGIN_ERROR
                     })
+            }
+        }
+
+        //Cuando el usuario inica sesion
+        const iniciarSesion = async datos =>{
+            try {
+                const respuesta = await clienteAxios.post ('/api/auth', datos)
+
+            } catch (error) {
+                const alerta = {
+                    msg: error.response.data.msg,
+                    categoria : 'alerta-error'
+                }
+                dispatch({
+                    type: LOGIN_ERROR,
+                    payload: alerta
+                })
             }
         }
 
@@ -69,7 +91,8 @@ import {REGISTRO_EXITOSO,
                 autenticado: state.autenticado,
                 usuario: state.usuario,
                 mensaje: state.mensaje,
-                registrarUsuario
+                registrarUsuario,
+                iniciarSesion
             }}
             >{props.children}
 
